@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cards>
+	<questions> 
+		<q>___ was the most traumatic thing to happen to Franz Ferdinand.</q>
+		<q>Who's your daddy? </q>
+		<q>Highly anticipated release from ___: ___</q>
+		<q>___ ___, the greatest rapper of all time.</q>
+	</questions>
+	<answers>
+		<a>Rick James</a>
+		<a>Mutilation</a>
+		<a>Toenail clippings.</a>
+		<a>The Deterministic Universe</a>
+		<a>Oregano</a>
+		<a>A Shiny Beedrill</a>
+		<a>Measles</a>
+		<a>Electron Density Clouds</a>
+		<a>Tangerines</a>
+		<a>Dad Jokes</a>
+	</answers>
+</cards>

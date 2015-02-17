@@ -1,0 +1,167 @@
+﻿Build started 3/19/2014 9:04:31 AM.
+     1>Project "H:\RakNetP2P\Raknet\Lib\LibStatic\LibStatic_vc9.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I./../../Source /I"./../../DependentExtensions/openssl-1.0.0d/include" /I./../../DependentExtensions /ZI /nologo /W4 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _RAKNET_LIB /D _CRT_NONSTDC_NO_DEPRECATE /D _CRT_SECURE_NO_DEPRECATE /D _USING_V110_SDK71_ /D _UNICODE /D UNICODE /Gm /RTC1 /MTd /GS- /fp:precise /Zc:wchar_t /Zc:forScope /GR- /Fo"Win32\Debug\\" /Fd"H:\RakNetP2P\Raknet\Lib\RakNet_VS2008_LibStatic_Debug_Win32.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\Source\CloudClient.cpp ..\..\Source\CloudServer.cpp ..\..\Source\ConnectionGraph2.cpp ..\..\Source\DirectoryDeltaTransfer.cpp ..\..\Source\DynDNS.cpp ..\..\Source\FileListTransfer.cpp ..\..\Source\FullyConnectedMesh2.cpp ..\..\Source\MessageFilter.cpp ..\..\Source\NatPunchthroughClient.cpp ..\..\Source\NatPunchthroughServer.cpp ..\..\Source\NatTypeDetectionClient.cpp ..\..\Source\NatTypeDetectionCommon.cpp ..\..\Source\NatTypeDetectionServer.cpp ..\..\Source\NetworkIDManager.cpp ..\..\Source\PacketLogger.cpp ..\..\Source\PluginInterface2.cpp ..\..\Source\RPC4Plugin.cpp ..\..\Source\RakNetCommandParser.cpp ..\..\Source\RakNetSocket2.cpp ..\..\Source\RakNetTransport2.cpp ..\..\Source\RakNetTypes.cpp ..\..\Source\RakPeer.cpp ..\..\Source\ReadyEvent.cpp ..\..\Source\RelayPlugin.cpp ..\..\Source\ReliabilityLayer.cpp ..\..\Source\ReplicaManager3.cpp ..\..\Source\Router2.cpp ..\..\Source\SocketLayer.cpp ..\..\Source\StatisticsHistory.cpp ..\..\Source\TeamBalancer.cpp ..\..\Source\TwoWayAuthentication.cpp ..\..\Source\UDPProxyClient.cpp ..\..\Source\UDPProxyCoordinator.cpp ..\..\Source\UDPProxyServer.cpp
+         CloudClient.cpp
+         Generating Code...
+         Compiling...
+         UDPProxyServer.cpp
+         UDPProxyCoordinator.cpp
+         UDPProxyClient.cpp
+         TwoWayAuthentication.cpp
+     1>c:\program files (x86)\microsoft visual studio 11.0\vc\include\xlocale(336): warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc
+         TeamBalancer.cpp
+         StatisticsHistory.cpp
+         SocketLayer.cpp
+     1>c:\program files (x86)\microsoft visual studio 11.0\vc\include\xlocale(336): warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc
+         Router2.cpp
+         ReplicaManager3.cpp
+         ReliabilityLayer.cpp
+     1>c:\program files (x86)\microsoft visual studio 11.0\vc\include\xlocale(336): warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc
+         RelayPlugin.cpp
+         ReadyEvent.cpp
+         RakPeer.cpp
+     1>c:\program files (x86)\microsoft visual studio 11.0\vc\include\xlocale(336): warning C4530: C++ exception handler used, but unwind semantics are not enabled. Specify /EHsc
+     1>h:\raknetp2p\raknet\source\rakpeer.cpp(421): warning C4018: '<' : signed/unsigned mismatch
+     1>h:\raknetp2p\raknet\source\rakpeer.cpp(569): warning C4018: '<' : signed/unsigned mismatch
+     1>h:\raknetp2p\raknet\source\rakpeer.cpp(614): warning C4018: '<' : signed/unsigned mismatch
+     1>h:\raknetp2p\raknet\source\rakpeer.cpp(720): warning C4018: '<' : signed/unsigned mismatch
+     1>h:\raknetp2p\raknet\source\rakpeer.cpp(725): warning C4018: '<' : signed/unsigned mismatch
+         RakNetTypes.cpp
+         RakNetTransport2.cpp
+         RakNetSocket2.cpp
+         RakNetCommandParser.cpp
+         RPC4Plugin.cpp
+         PluginInterface2.cpp
+         PacketLogger.cpp
+         Generating Code...
+         Compiling...
+         NetworkIDManager.cpp
+         NatTypeDetectionServer.cpp
+         NatTypeDetectionCommon.cpp
+         NatTypeDetectionClient.cpp
+         NatPunchthroughServer.cpp
+     1>h:\raknetp2p\raknet\source\natpunchthroughserver.cpp(236): warning C4018: '<' : signed/unsigned mismatch
+         NatPunchthroughClient.cpp
+         MessageFilter.cpp
+         FullyConnectedMesh2.cpp
+         FileListTransfer.cpp
+         DynDNS.cpp
+         DirectoryDeltaTransfer.cpp
+         ConnectionGraph2.cpp
+         CloudServer.cpp
+         Generating Code...
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V110\Microsoft.CppBuild.targets(1299,5): warning MSB8012: TargetPath(H:\RakNetP2P\Raknet\Lib\LibStatic.lib) does not match the Library's OutputFile property value (H:\RakNetP2P\Raknet\Lib\RakNet_VS2008_LibStatic_Debug_Win32.lib). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Lib.OutputFile).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V110\Microsoft.CppBuild.targets(1301,5): warning MSB8012: TargetName(LibStatic) does not match the Library's OutputFile property value (RakNet_VS2008_LibStatic_Debug_Win32). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Lib.OutputFile).
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\Lib.exe /OUT:"H:\RakNetP2P\Raknet\Lib\RakNet_VS2008_LibStatic_Debug_Win32.lib" /NOLOGO /NODEFAULTLIB:"LIBCD.lib LIBCMTD.lib MSVCRT.lib" Win32\Debug\_FindFirst.obj
+         Win32\Debug\Base64Encoder.obj
+         Win32\Debug\BitStream.obj
+         Win32\Debug\CCRakNetSlidingWindow.obj
+         Win32\Debug\CCRakNetUDT.obj
+         Win32\Debug\CheckSum.obj
+         Win32\Debug\CloudClient.obj
+         Win32\Debug\CloudCommon.obj
+         Win32\Debug\CloudServer.obj
+         Win32\Debug\CommandParserInterface.obj
+         Win32\Debug\ConnectionGraph2.obj
+         Win32\Debug\ConsoleServer.obj
+         Win32\Debug\DataCompressor.obj
+         Win32\Debug\DirectoryDeltaTransfer.obj
+         Win32\Debug\DS_BytePool.obj
+         Win32\Debug\DS_ByteQueue.obj
+         Win32\Debug\DS_HuffmanEncodingTree.obj
+         Win32\Debug\DS_Table.obj
+         Win32\Debug\DynDNS.obj
+         Win32\Debug\EmailSender.obj
+         Win32\Debug\EpochTimeToString.obj
+         Win32\Debug\FileList.obj
+         Win32\Debug\FileListTransfer.obj
+         Win32\Debug\FileOperations.obj
+         Win32\Debug\FormatString.obj
+         Win32\Debug\FullyConnectedMesh2.obj
+         Win32\Debug\Getche.obj
+         Win32\Debug\Gets.obj
+         Win32\Debug\GetTime.obj
+         Win32\Debug\gettimeofday.obj
+         Win32\Debug\GridSectorizer.obj
+         Win32\Debug\HTTPConnection.obj
+         Win32\Debug\HTTPConnection2.obj
+         Win32\Debug\IncrementalReadInterface.obj
+         Win32\Debug\Itoa.obj
+         Win32\Debug\LinuxStrings.obj
+         Win32\Debug\LocklessTypes.obj
+         Win32\Debug\LogCommandParser.obj
+         Win32\Debug\MessageFilter.obj
+         Win32\Debug\NatPunchthroughClient.obj
+         Win32\Debug\NatPunchthroughServer.obj
+         Win32\Debug\NatTypeDetectionClient.obj
+         Win32\Debug\NatTypeDetectionCommon.obj
+         Win32\Debug\NatTypeDetectionServer.obj
+         Win32\Debug\NetworkIDManager.obj
+         Win32\Debug\NetworkIDObject.obj
+         Win32\Debug\PacketConsoleLogger.obj
+         Win32\Debug\PacketFileLogger.obj
+         Win32\Debug\PacketizedTCP.obj
+         Win32\Debug\PacketLogger.obj
+         Win32\Debug\PacketOutputWindowLogger.obj
+         Win32\Debug\PluginInterface2.obj
+         Win32\Debug\Rackspace.obj
+         Win32\Debug\RakMemoryOverride.obj
+         Win32\Debug\RakNetCommandParser.obj
+         Win32\Debug\RakNetSocket.obj
+         Win32\Debug\RakNetSocket2.obj
+         Win32\Debug\RakNetSocket2_360_720.obj
+         Win32\Debug\RakNetSocket2_Berkley.obj
+         Win32\Debug\RakNetSocket2_NativeClient.obj
+         Win32\Debug\RakNetSocket2_PS3_PS4.obj
+         Win32\Debug\RakNetSocket2_Vita.obj
+         Win32\Debug\RakNetSocket2_Windows_Linux.obj
+         Win32\Debug\RakNetSocket2_Windows_Linux_360.obj
+         Win32\Debug\RakNetStatistics.obj
+         Win32\Debug\RakNetTransport2.obj
+         Win32\Debug\RakNetTypes.obj
+         Win32\Debug\RakPeer.obj
+         Win32\Debug\RakSleep.obj
+         Win32\Debug\RakString.obj
+         Win32\Debug\RakThread.obj
+         Win32\Debug\RakWString.obj
+         Win32\Debug\Rand.obj
+         Win32\Debug\ReadyEvent.obj
+         Win32\Debug\RelayPlugin.obj
+         Win32\Debug\ReliabilityLayer.obj
+         Win32\Debug\ReplicaManager3.obj
+         Win32\Debug\Router2.obj
+         Win32\Debug\RPC4Plugin.obj
+         Win32\Debug\SecureHandshake.obj
+         Win32\Debug\SendToThread.obj
+         Win32\Debug\DR_SHA1.obj
+         Win32\Debug\SignaledEvent.obj
+         Win32\Debug\SimpleMutex.obj
+         Win32\Debug\SocketLayer.obj
+         Win32\Debug\StatisticsHistory.obj
+         Win32\Debug\StringCompressor.obj
+         Win32\Debug\StringTable.obj
+         Win32\Debug\SuperFastHash.obj
+         Win32\Debug\TableSerializer.obj
+         Win32\Debug\TCPInterface.obj
+         Win32\Debug\TeamBalancer.obj
+         Win32\Debug\TeamManager.obj
+         Win32\Debug\TelnetTransport.obj
+         Win32\Debug\ThreadsafePacketLogger.obj
+         Win32\Debug\TwoWayAuthentication.obj
+         Win32\Debug\UDPForwarder.obj
+         Win32\Debug\UDPProxyClient.obj
+         Win32\Debug\UDPProxyCoordinator.obj
+         Win32\Debug\UDPProxyServer.obj
+         Win32\Debug\VariableDeltaSerializer.obj
+         Win32\Debug\VariableListDeltaTracker.obj
+         Win32\Debug\VariadicSQLParser.obj
+         Win32\Debug\VitaIncludes.obj
+         Win32\Debug\WSAStartupSingleton.obj
+         LibStatic_vc9.vcxproj -> H:\RakNetP2P\Raknet\Lib\LibStatic.lib
+     1>Done Building Project "H:\RakNetP2P\Raknet\Lib\LibStatic\LibStatic_vc9.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:47.55

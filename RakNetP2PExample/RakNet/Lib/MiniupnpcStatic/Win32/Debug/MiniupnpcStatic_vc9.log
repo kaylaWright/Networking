@@ -1,0 +1,36 @@
+﻿Build started 3/12/2014 8:38:10 AM.
+     1>Project "C:\Program Files (x86)\Raknet\Lib\MiniupnpcStatic\MiniupnpcStatic_vc9.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"C:\Program Files (x86)\Raknet\DependentExtensions\miniupnpc-1.6.20120410" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D STATICLIB /D _CRT_NONSTDC_NO_DEPRECATE /D _CRT_SECURE_NO_DEPRECATE /D _USING_V110_SDK71_ /D _UNICODE /D UNICODE /Gm /RTC1 /MTd /GS- /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Win32\Debug\\" /Fd"C:\Program Files (x86)\Raknet\Lib\RakNet_VS2008_MiniupnpcStatic_Debug_Win32.pdb" /Gd /TC /analyze- /errorReport:prompt "..\..\DependentExtensions\miniupnpc-1.6.20120410\connecthostport.c" "..\..\DependentExtensions\miniupnpc-1.6.20120410\igd_desc_parse.c" "..\..\DependentExtensions\miniupnpc-1.6.20120410\minisoap.c" "..\..\DependentExtensions\miniupnpc-1.6.20120410\miniupnpc.c" "..\..\DependentExtensions\miniupnpc-1.6.20120410\miniwget.c" "..\..\DependentExtensions\miniupnpc-1.6.20120410\minixml.c" "..\..\DependentExtensions\miniupnpc-1.6.20120410\portlistingparse.c" "..\..\DependentExtensions\miniupnpc-1.6.20120410\receivedata.c" "..\..\DependentExtensions\miniupnpc-1.6.20120410\upnpcommands.c" "..\..\DependentExtensions\miniupnpc-1.6.20120410\upnperrors.c" "..\..\DependentExtensions\miniupnpc-1.6.20120410\upnpreplyparse.c"
+         upnpreplyparse.c
+         upnperrors.c
+         upnpcommands.c
+         receivedata.c
+         portlistingparse.c
+         minixml.c
+         miniwget.c
+         miniupnpc.c
+         minisoap.c
+         igd_desc_parse.c
+         connecthostport.c
+         Generating Code...
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V110\Microsoft.CppBuild.targets(1299,5): warning MSB8012: TargetPath(C:\Program Files (x86)\Raknet\Lib\MiniupnpcStatic.lib) does not match the Library's OutputFile property value (C:\Program Files (x86)\Raknet\Lib\RakNet_VS2008_MiniupnpcStatic_Debug_Win32.lib). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Lib.OutputFile).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V110\Microsoft.CppBuild.targets(1301,5): warning MSB8012: TargetName(MiniupnpcStatic) does not match the Library's OutputFile property value (RakNet_VS2008_MiniupnpcStatic_Debug_Win32). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Lib.OutputFile).
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\Lib.exe /OUT:"C:\Program Files (x86)\Raknet\Lib\RakNet_VS2008_MiniupnpcStatic_Debug_Win32.lib" /NOLOGO /NODEFAULTLIB:"LIBC.lib LIBCMT.lib MSVCRT.lib" Win32\Debug\connecthostport.obj
+         Win32\Debug\igd_desc_parse.obj
+         Win32\Debug\minisoap.obj
+         Win32\Debug\miniupnpc.obj
+         Win32\Debug\miniwget.obj
+         Win32\Debug\minixml.obj
+         Win32\Debug\portlistingparse.obj
+         Win32\Debug\receivedata.obj
+         Win32\Debug\upnpcommands.obj
+         Win32\Debug\upnperrors.obj
+         Win32\Debug\upnpreplyparse.obj
+         MiniupnpcStatic_vc9.vcxproj -> C:\Program Files (x86)\Raknet\Lib\MiniupnpcStatic.lib
+     1>Done Building Project "C:\Program Files (x86)\Raknet\Lib\MiniupnpcStatic\MiniupnpcStatic_vc9.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.85

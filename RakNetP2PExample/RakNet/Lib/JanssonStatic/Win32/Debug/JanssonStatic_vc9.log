@@ -1,0 +1,34 @@
+﻿Build started 3/12/2014 8:37:46 AM.
+     1>Project "C:\Program Files (x86)\Raknet\Lib\JanssonStatic\JanssonStatic_vc9.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /I"C:\Program Files (x86)\Raknet\DependentExtensions\jansson-2.4\src" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D _CRT_NONSTDC_NO_DEPRECATE /D _CRT_SECURE_NO_DEPRECATE /D _UNICODE /D UNICODE /Gm /RTC1 /MTd /GS- /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Win32\Debug\\" /Fd"C:\Program Files (x86)\Raknet\Lib\RakNet_VS2008_JanssonStatic_Debug_Win32.pdb" /Gd /TC /analyze- /errorReport:prompt "..\..\DependentExtensions\jansson-2.4\src\dump.c" "..\..\DependentExtensions\jansson-2.4\src\error.c" "..\..\DependentExtensions\jansson-2.4\src\hashtable.c" "..\..\DependentExtensions\jansson-2.4\src\load.c" "..\..\DependentExtensions\jansson-2.4\src\memory.c" "..\..\DependentExtensions\jansson-2.4\src\pack_unpack.c" "..\..\DependentExtensions\jansson-2.4\src\strbuffer.c" "..\..\DependentExtensions\jansson-2.4\src\strconv.c" "..\..\DependentExtensions\jansson-2.4\src\utf.c" "..\..\DependentExtensions\jansson-2.4\src\value.c"
+         value.c
+         utf.c
+         strconv.c
+         strbuffer.c
+         pack_unpack.c
+         memory.c
+         load.c
+         hashtable.c
+         error.c
+         dump.c
+         Generating Code...
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V110\Microsoft.CppBuild.targets(1299,5): warning MSB8012: TargetPath(C:\Program Files (x86)\Raknet\Lib\JanssonStatic.lib) does not match the Library's OutputFile property value (C:\Program Files (x86)\Raknet\Lib\RakNet_VS2008_JanssonStatic_Debug_Win32.lib). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Lib.OutputFile).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V110\Microsoft.CppBuild.targets(1301,5): warning MSB8012: TargetName(JanssonStatic) does not match the Library's OutputFile property value (RakNet_VS2008_JanssonStatic_Debug_Win32). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Lib.OutputFile).
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\Lib.exe /OUT:"C:\Program Files (x86)\Raknet\Lib\RakNet_VS2008_JanssonStatic_Debug_Win32.lib" /NOLOGO Win32\Debug\dump.obj
+         Win32\Debug\error.obj
+         Win32\Debug\hashtable.obj
+         Win32\Debug\load.obj
+         Win32\Debug\memory.obj
+         Win32\Debug\pack_unpack.obj
+         Win32\Debug\strbuffer.obj
+         Win32\Debug\strconv.obj
+         Win32\Debug\utf.obj
+         Win32\Debug\value.obj
+         JanssonStatic_vc9.vcxproj -> C:\Program Files (x86)\Raknet\Lib\JanssonStatic.lib
+     1>Done Building Project "C:\Program Files (x86)\Raknet\Lib\JanssonStatic\JanssonStatic_vc9.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.98
