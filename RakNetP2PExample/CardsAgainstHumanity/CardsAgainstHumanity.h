@@ -18,6 +18,9 @@
 
 //game includes
 
+//defines
+#define HANDSIZE 5
+
 //some useful definitions.
 //keeps track of what step of the game we're at. 
 enum GameStates { WAITING_PLAYERS, WAITING_CARDS, DECIDING_WINNER };
@@ -31,31 +34,29 @@ struct Player
 		pName = _name;
 		pScore = _score; 
 		isAsker = false;
-		for (int i = 0; i < 5; i++)
-		{
-			hand[i] = "";
-		}
+		hand = std::vector<std::string>();
 	}
 	//the player name.
 	std::string pName;
 	//the indices of the cards they have been allotted.
-	std::string hand[5];
+	std::vector<std::string> hand;
 	//their score. 
 	int pScore;
 	//determines if they judge or play this turn. 
 	bool isAsker;
 };
 
+//host-specific vars.
+
 //typedefs.
 typedef std::vector<std::string>::iterator stringIT;
 typedef std::vector<Player>::iterator playerIT;
-
 
 class CardsAgainstHumanity
 {
 private:
 	//networking variables. 
-	NetworkHelper* netHelper = 0;
+	NetworkHelper* netHelper;
 	char command[256];
 	std::thread* inputProcessingThread;
 
@@ -66,10 +67,6 @@ private:
 	std::vector<std::string> questionCards;
 	std::vector<std::string> answerCards;
 
-	//players. 
-	std::vector<Player> players;
-	Player player;
-
 	//sets up the game (loads and shuffles cards, etc.
 	void SetupGame();
 
@@ -77,11 +74,6 @@ private:
 	bool LoadCards();
 	//shuffles a given deck of cards using the fisher-yates shuffle.
 	bool ShuffleCards(std::vector<std::string> &_deck);
-	//deals out cards to each player based off of random indices in the answer vector. 
-	void DealCards();
-	//allows players to take a single card to replace one they've already had. 
-	//still the hosts resposibility -> must draw the card and replace the one they used with it. 
-	std::string DrawCard();
 
 	//ready events. 
 	void GetReadyToPlay();
@@ -100,6 +92,20 @@ public:
 	void Init();
 	bool Run();
 	void Shutdown();
+
+	//players. 
+	Player player;
+	//game state
+	GameStates currentState; 
+
+	//deals out cards to each player based off of random indices in the answer vector. 
+	void DealAnswerCards(int _numCards);
+	//allows players to take a single card to replace one they've already had. 
+	//still the hosts resposibility -> must draw the card and replace the one they used with it. 
+	std::string DrawQuestionCard();
+
+	//allows player to choose card, submits contents of the card to the host for collection. 
+	std::string ChooseCard();
 
 	//getters/setters, if needed.
 	bool GetQuit() const;

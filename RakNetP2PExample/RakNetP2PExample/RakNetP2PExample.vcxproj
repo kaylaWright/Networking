@@ -85,11 +85,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="NetworkComponent.cpp" />
     <ClCompile Include="NetworkHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="NetworkComponent.h" />
     <ClInclude Include="NetworkHelper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

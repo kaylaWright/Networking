@@ -4,11 +4,14 @@
 
 CardsAgainstHumanity::CardsAgainstHumanity() : isQuit(false)
 {
+	netHelper = new NetworkHelper(this);
+
 	//seed that sweet, sweet random. 
 	std::srand(time(NULL));
 
 	//initialize the player to default values. 
 	player = Player();
+	currentState = WAITING_PLAYERS;
 }
 
 CardsAgainstHumanity::~CardsAgainstHumanity()
@@ -27,8 +30,8 @@ CardsAgainstHumanity::~CardsAgainstHumanity()
 void CardsAgainstHumanity::Init()
 {
 	std::cout << "Welcome to Cards Against Humanity (#15 in the class)!" << std::endl;
-	GetHost();
 	GetName();
+	GetHost();
 	GetReadyToPlay();
 }
 
@@ -65,6 +68,8 @@ void CardsAgainstHumanity::SetupGame()
 	ShuffleCards(questionCards);
 	//shuffle the answer cards. 
 	ShuffleCards(answerCards);
+
+	netHelper->Update();
 }
 
 //shuffles the cards of a given vector. 
@@ -98,7 +103,6 @@ void CardsAgainstHumanity::GetHost()
 	{
 		std::cout << "You'll host then." << std::endl;
 
-		netHelper = new NetworkHelper();
 		netHelper->Init(true);
 
 		//only the host needs to hold onto the 'original' ordering of the cards, and will be responsible for
@@ -109,7 +113,6 @@ void CardsAgainstHumanity::GetHost()
 	{
 		std::cout << "You want to join an ongoing game." << std::endl;
 
-		netHelper = new NetworkHelper();
 		netHelper->Init(false);
 		GetConnection();
 	}
@@ -133,7 +136,8 @@ void CardsAgainstHumanity::GetConnection()
 	if (command[0] == 'H' || command[0] == 'h')
 	{
 		std::cout << "Connecting to yourself, huh? You're super cool." << std::endl;
-		netHelper->EstablishConnection("127.0.0.7");
+		netHelper->EstablishConnection("127.0.0.1");
+		netHelper->Update();
 	}
 	else if (netHelper->EstablishConnection(command))
 	{
@@ -143,6 +147,7 @@ void CardsAgainstHumanity::GetConnection()
 	{
 		std::cout << "Yeah, we don't recognize that one. Try again." << std::endl;
 		GetConnection();
+		netHelper->Update();
 	}
 }
 
@@ -166,15 +171,15 @@ void CardsAgainstHumanity::GetReadyToPlay()
 		std::cout << command[0];
 	}
 
-	netHelper->SetEvent(NetworkHelper::RE_START, true);
+	netHelper->SetEvent(NetworkHelper::RE_WAITINGFORPLAYERS, true);
 
-	system("cls");
+	//system("cls");
 	std::cout << "Waiting on other players to be ready..." << std::endl;
 }
 
 #pragma endregion
 
-#pragma region xmlreading 
+#pragma region cardhandling  
 
 //loads the cards in from an xml. 
 bool CardsAgainstHumanity::LoadCards()
@@ -203,6 +208,64 @@ bool CardsAgainstHumanity::LoadCards()
 
 	//all's well! <3
 	return true; 
+}
+
+//deals out cards to each player based off of random indices in the answer vector. 
+void CardsAgainstHumanity::DealAnswerCards(int _numCards)
+{
+	//deal five cards to the host.
+	for (int i = 0; i < _numCards; i++)
+	{
+		player.hand.push_back(answerCards.back());
+		answerCards.pop_back();
+	}
+
+	//deal out cards to remaining players. 
+	// i = 1 because 0 is the host. 
+	for (int i = 1; i < netHelper->GetNumConnections(); i++)
+	{
+		for (int c = 0; c < _numCards; c++)
+		{
+			netHelper->SendMessageToPeer(ID_RECEIVE_CARD, netHelper->GetPlayerAddress(i), answerCards.back());
+		}
+	}
+}
+
+std::string CardsAgainstHumanity::DrawQuestionCard()
+{
+	//draws a question card, broadcasts it to everyone. 
+	return "";
+}
+
+std::string CardsAgainstHumanity::ChooseCard()
+{
+	system("cls");
+	std::cout << "Which card would you like to play?" << std::endl;
+
+	for (int i = 0; i < player.hand.size(); i++)
+	{
+		std::cout << (i + 1) << ": " << player.hand[i] << std::endl;
+	}
+
+	std::cin.clear();
+	std::cin >> command;
+
+	switch (command[0])
+	{
+	case '1':
+	case '2':
+	case '3':
+	case '4':
+	case '5':
+		return player.hand[static_cast<int>(command[0])];
+		break;
+	default:
+		std::cout << "You don't own a card by that number. Wanna try again?" << std::endl;
+		ChooseCard();
+		break;
+	}
+
+	return NULL;
 }
 
 #pragma endregion 
