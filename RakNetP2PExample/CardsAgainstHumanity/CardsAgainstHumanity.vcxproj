@@ -40,7 +40,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
     <ExecutablePath>C:\Users\Jack\Other\Desktop\RakNetP2PExample\Debug;$(ExecutablePath)</ExecutablePath>
     <IncludePath>C:\Users\Jack\Other\Desktop\RakNetP2PExample\RakNet\Source;C:\Users\Jack\Other\Desktop\RakNetP2PExample\PugiXML\src;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\Jack\Other\Desktop\RakNetP2PExample\RakNet\Lib;C:\Users\Jack\Other\Desktop\RakNetP2PExample\Debug;$(LibraryPath)</LibraryPath>

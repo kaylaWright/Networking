@@ -64,16 +64,16 @@ private:
 	bool isQuit; 
 
 	//cards. 
+	std::string currentQuestionCard;
 	std::vector<std::string> questionCards;
 	std::vector<std::string> answerCards;
-
-	//sets up the game (loads and shuffles cards, etc.
-	void SetupGame();
 
 	//xml handling of the cards. 
 	bool LoadCards();
 	//shuffles a given deck of cards using the fisher-yates shuffle.
 	bool ShuffleCards(std::vector<std::string> &_deck);
+	//displays all the cards, prefaced by a number. 
+	void DisplayCards();
 
 	//ready events. 
 	void GetReadyToPlay();
@@ -98,18 +98,24 @@ public:
 	//game state
 	GameStates currentState; 
 
+	//sets up the game (loads and shuffles cards, etc.
+	void SetupGame();
+
 	//deals out cards to each player based off of random indices in the answer vector. 
 	void DealAnswerCards(int _numCards);
 	//allows players to take a single card to replace one they've already had. 
 	//still the hosts resposibility -> must draw the card and replace the one they used with it. 
 	std::string DrawQuestionCard();
-
 	//allows player to choose card, submits contents of the card to the host for collection. 
 	std::string ChooseCard();
+
+	void AddScore();
 
 	//getters/setters, if needed.
 	bool GetQuit() const;
 	void SetQuit(bool _new);
+
+	void SetQuestionCard(std::string _card);
 };
 
 #endif

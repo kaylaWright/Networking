@@ -12,6 +12,7 @@ CardsAgainstHumanity::CardsAgainstHumanity() : isQuit(false)
 	//initialize the player to default values. 
 	player = Player();
 	currentState = WAITING_PLAYERS;
+	LoadCards();
 }
 
 CardsAgainstHumanity::~CardsAgainstHumanity()
@@ -58,7 +59,6 @@ void CardsAgainstHumanity::Shutdown()
 
 #pragma region gamehandling
 
-
 void CardsAgainstHumanity::SetupGame()
 {
 	//use an xml parser to load the cards in. 
@@ -69,7 +69,16 @@ void CardsAgainstHumanity::SetupGame()
 	//shuffle the answer cards. 
 	ShuffleCards(answerCards);
 
-	netHelper->Update();
+	//decide what card will be played upon.
+	DrawQuestionCard();
+
+	//deal out cards as needed to start game. 
+	DealAnswerCards(5);
+
+	currentState = GameStates::WAITING_CARDS;
+	netHelper->BroadcastMessageToPeers(GameMessages::ID_CHOOSE_CARD, "");
+
+	ChooseCard();
 }
 
 //shuffles the cards of a given vector. 
@@ -213,6 +222,12 @@ bool CardsAgainstHumanity::LoadCards()
 //deals out cards to each player based off of random indices in the answer vector. 
 void CardsAgainstHumanity::DealAnswerCards(int _numCards)
 {
+	//if we've run through the deck of answer cards, reload it in.
+	if (answerCards.empty())
+	{
+		LoadCards();
+	}
+
 	//deal five cards to the host.
 	for (int i = 0; i < _numCards; i++)
 	{
@@ -220,35 +235,51 @@ void CardsAgainstHumanity::DealAnswerCards(int _numCards)
 		answerCards.pop_back();
 	}
 
+	std::cout << netHelper->GetNumConnections() << std::endl;
+
 	//deal out cards to remaining players. 
 	// i = 1 because 0 is the host. 
-	for (int i = 1; i < netHelper->GetNumConnections(); i++)
+	for (int i = 0; i < netHelper->GetNumConnections(); i++)
 	{
 		for (int c = 0; c < _numCards; c++)
 		{
 			netHelper->SendMessageToPeer(ID_RECEIVE_CARD, netHelper->GetPlayerAddress(i), answerCards.back());
+			answerCards.pop_back();
 		}
 	}
 }
 
+//host only, draws a new question card and passes it back to all players (except host) for displaying. 
 std::string CardsAgainstHumanity::DrawQuestionCard()
 {
-	//draws a question card, broadcasts it to everyone. 
-	return "";
+	currentQuestionCard = questionCards.back();
+	for (int i = 0; i < netHelper->GetNumConnections(); i++)
+	{
+		netHelper->SendMessageToPeer(ID_RECEIVE_QUESTION_CARD, netHelper->GetPlayerAddress(i), questionCards.back());
+	}
+
+	questionCards.pop_back();
+
+	return currentQuestionCard;
 }
 
+//allows the player to choose which card they would like to play this round
+//triggers a ready event. 
 std::string CardsAgainstHumanity::ChooseCard()
 {
 	system("cls");
-	std::cout << "Which card would you like to play?" << std::endl;
 
-	for (int i = 0; i < player.hand.size(); i++)
-	{
-		std::cout << (i + 1) << ": " << player.hand[i] << std::endl;
-	}
+	//dispaly the current question card. 
+	std::cout << "Play on: " << std::endl;
+	std::cout << currentQuestionCard << std::endl << std::endl;
+
+	std::cout << "Which card would you like to play?" << std::endl;
+	DisplayCards();
 
 	std::cin.clear();
 	std::cin >> command;
+
+	int temp = NULL;
 
 	switch (command[0])
 	{
@@ -257,19 +288,45 @@ std::string CardsAgainstHumanity::ChooseCard()
 	case '3':
 	case '4':
 	case '5':
-		return player.hand[static_cast<int>(command[0])];
+	{
+		//need to subtract the extra one because the cases are 1-5, not 0-4.
+		temp = command[0] - 49;
+		std::cout << std::endl << "Okay, you've chosen..." << std::endl << player.hand[temp] << std::endl;
+		std::cout << "Now we're just waiting on the others..." << std::endl; 
+		netHelper->SetEvent(NetworkHelper::RE_WAITINGFORACTIONS, true);
 		break;
+	}
 	default:
 		std::cout << "You don't own a card by that number. Wanna try again?" << std::endl;
 		ChooseCard();
 		break;
 	}
 
-	return NULL;
+	return player.hand[temp];
+}
+
+//displays all the cards, numbered according to the first one shown. 
+void CardsAgainstHumanity::DisplayCards()
+{
+	for (int i = 0; i < player.hand.size(); i++)
+	{
+		std::cout << (i + 1) << ": " << player.hand[i] << std::endl;
+	}
 }
 
 #pragma endregion 
 
+#pragma region scoring.
+
+//adds a score to the players count. 
+void CardsAgainstHumanity::AddScore()
+{
+	player.pScore += 1;
+}
+
+#pragma region
+
+//this region is full of getters/setters. Names are self-explanatory, ditto that with any parameters. 
 #pragma region get/set
 
 bool CardsAgainstHumanity::GetQuit() const
@@ -280,6 +337,11 @@ bool CardsAgainstHumanity::GetQuit() const
 void CardsAgainstHumanity::SetQuit(bool _new)
 {
 	isQuit = _new; 
+}
+
+void CardsAgainstHumanity::SetQuestionCard(std::string _card)
+{
+	currentQuestionCard = _card;
 }
 
 #pragma endregion 

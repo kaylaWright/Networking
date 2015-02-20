@@ -102,32 +102,27 @@ void NetworkHelper::HandleEventAllSet(int eventId)
 	case RE_WAITINGFORPLAYERS:
 		if (GetNumConnections() < MIN_CONNECTIONS)
 		{
+			//tells other player this player is ready.
 			std::string temp = "We still need more players!\nWe only have " + std::to_string((GetNumConnections() + 1)) + "/4.";
-			//BroadcastMessageToPeers(ID_BROADCAST_MESSAGE, temp);
-
-			std::cout << "You are ready, " << currentGame->player.pName << "." << std::endl << std::endl;
 			temp = currentGame->player.pName + " is also ready.";
 			BroadcastMessageToPeers(ID_BROADCAST_MESSAGE, temp);
 
-			//std::cout << "" << std::endl;
-			//std::cout << "" << (GetNumConnections() + 1) << "/4." << std::endl;
+			//displays to self this player is ready. 
+			std::cout << "You are ready, " << currentGame->player.pName << "." << std::endl << std::endl;
 		}
 		else
 		{
 			//get the game rolling. 
 			if (m_IsHost)
 			{
-				currentGame->currentState = WAITING_CARDS;
-
-				RakNet::BitStream bsOUT;
-				bsOUT.Write((unsigned char)ID_START_ROUND);
-
-				m_RakPeer->Send(&bsOUT, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_RakPeer->GetSystemAddressFromIndex(0), false);
+				std::cout << "Let the games... BEGIN." << std::endl;
+				currentGame->SetupGame();
 			}
 		}
 		break;
 		break;
 	case RE_WAITINGFORACTIONS:
+		std::cout << "everyone's ready to see the cards!" << std::endl;
 		break;
 	case RE_FINISH:
 		break;
@@ -153,6 +148,7 @@ void NetworkHelper::SendMessageToPeer(GameMessages _type, SystemAddress _add, st
 	m_RakPeer->Send(&bsOUT, HIGH_PRIORITY, RELIABLE_ORDERED, 0, _add, false);
 }
 
+//similar to SendMessageToPeer, broadcasts a message to ALL peers. 
 void NetworkHelper::BroadcastMessageToPeers(GameMessages _type, std::string _message)
 {
 	RakNet::BitStream bsOUT;
@@ -172,9 +168,14 @@ void NetworkHelper::Update()
 	Packet *p; 
 	for(p = m_RakPeer->Receive(); p != NULL; m_RakPeer->DeallocatePacket(p), p = m_RakPeer->Receive())
 	{
+		//create a new rakstring to hold the data.
+		RakNet::RakString rs;
+		RakNet::BitStream bsIN(p->data, p->length, false);
+
 		switch (p->data[0])
 		{
 		//CAH specific.
+		//deals a whole hand to players -> in case one would like to restart a second round. 
 		case ID_DEAL_HAND:
 			if (m_IsHost)
 			{
@@ -182,6 +183,7 @@ void NetworkHelper::Update()
 				currentGame->DealAnswerCards(5);
 			}
 			break;
+		//deals a single card to all players.
 		case ID_DEAL_CARD:
 			if (m_IsHost)
 			{
@@ -189,7 +191,9 @@ void NetworkHelper::Update()
 				currentGame->DealAnswerCards(1);
 			}
 			break;
+		//allows players to choose a card. 
 		case ID_CHOOSE_CARD:
+			currentGame->ChooseCard();
 			break;
 		case ID_START_ROUND:
 			if (m_IsHost)
@@ -202,9 +206,6 @@ void NetworkHelper::Update()
 		case ID_RECEIVE_CARD:
 			if (m_IsHost == false)
 			{
-				//create a new rakstring to hold the data.
-				RakNet::RakString rs;
-				RakNet::BitStream bsIN(p->data, p->length, false);
 				//ignore the message sent in. 
 				bsIN.IgnoreBytes(sizeof(RakNet::MessageID));
 				bsIN.Read(rs);
@@ -214,36 +215,36 @@ void NetworkHelper::Update()
 				currentGame->player.hand.push_back(static_cast<std::string>(rs));
 			}
 			break;
+		//tells players what the current question card is 
+		case ID_RECEIVE_QUESTION_CARD:
+			bsIN.IgnoreBytes(sizeof(RakNet::MessageID));
+			bsIN.Read(rs);
+			currentGame->SetQuestionCard(static_cast<std::string>(rs));
+			break;
 		//broadcasts message to all players. 
 		case ID_BROADCAST_MESSAGE:
-			{
-				//PARSING
-				RakNet::RakString rs;
-				RakNet::BitStream bsIn(p->data, p->length, false);
-				bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
-				bsIn.Read(rs);
-				std::cout << rs.C_String() << std::endl;
-			}
+			bsIN.IgnoreBytes(sizeof(RakNet::MessageID));
+			bsIN.Read(rs);
+			std::cout << rs.C_String() << std::endl;
 			break;
 		//general networking. 
 		case ID_NEW_INCOMING_CONNECTION:
 			printf("A new player is joining...\n");
+			//necessary, or adding in a player twice? 
 			m_ReadyEventPlugin.AddToWaitList(RE_WAITINGFORPLAYERS, p->guid);
 			m_ReadyEventPlugin.AddToWaitList(RE_WAITINGFORACTIONS, p->guid);
 			m_ReadyEventPlugin.AddToWaitList(RE_FINISH, p->guid);
+
 			break;
 		case ID_CONNECTION_REQUEST_ACCEPTED:
-			printf("Connection request accepted!\n");
+			printf("Your connection request accepted!\n");
 			//adding peers that you are connected to, to your event list
 			m_ReadyEventPlugin.AddToWaitList(RE_WAITINGFORPLAYERS, p->guid);
 			m_ReadyEventPlugin.AddToWaitList(RE_WAITINGFORACTIONS, p->guid);
 			m_ReadyEventPlugin.AddToWaitList(RE_FINISH, p->guid);
-			{
-				RakNet::RakString rs;
-				RakNet::BitStream bsIn(p->data, p->length, false);
-				bsIn.IgnoreBytes(sizeof(RakNet::MessageID));
-				m_RakPeer->Send(&bsIn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, p->systemAddress, true);
-			}
+			
+			bsIN.IgnoreBytes(sizeof(RakNet::MessageID));
+			m_RakPeer->Send(&bsIN, HIGH_PRIORITY, RELIABLE_ORDERED, 0, p->systemAddress, true);
 			break;
 		case ID_CONNECTION_ATTEMPT_FAILED:
 			printf("Connection attempt failed\n");
@@ -251,12 +252,9 @@ void NetworkHelper::Update()
 		case ID_READY_EVENT_ALL_SET:
 			{
 				int eventId = 0;
-				RakNet::BitStream bs(p->data,p->length,false);
-				bs.IgnoreBytes(sizeof(MessageID));
-				bs.Read(eventId);
-				
+				bsIN.IgnoreBytes(sizeof(MessageID));
+				bsIN.Read(eventId);
 				HandleEventAllSet(eventId);
-				
 			}
 			break;
 		case ID_READY_EVENT_SET:

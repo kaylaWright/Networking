@@ -19,11 +19,12 @@ using namespace RakNet;
 enum GameMessages
 {
 	ID_DEAL_HAND = ID_USER_PACKET_ENUM + 1,
-	ID_DEAL_CARD = ID_USER_PACKET_ENUM + 2,
+	ID_DEAL_CARD = ID_USER_PACKET_ENUM + 2, 
 	ID_CHOOSE_CARD = ID_USER_PACKET_ENUM + 3,
 	ID_START_ROUND = ID_USER_PACKET_ENUM + 4,
 	ID_RECEIVE_CARD = ID_USER_PACKET_ENUM + 5,
-	ID_BROADCAST_MESSAGE = ID_USER_PACKET_ENUM + 6
+	ID_RECEIVE_QUESTION_CARD = ID_USER_PACKET_ENUM + 6,
+	ID_BROADCAST_MESSAGE = ID_USER_PACKET_ENUM + 7
 };
 
 class NetworkHelper
@@ -32,7 +33,7 @@ private:
 	//maximum of eight player game (counting host) at zero index.
 	static const unsigned int MAX_CONNECTIONS = 7;
 	//minimum of four player game (counting host) from zero index. 
-	static const unsigned int MIN_CONNECTIONS = 3;
+	static const unsigned int MIN_CONNECTIONS = 1;
 	//i don't really know what this means. 
 	static const unsigned int PORT = 60000;
 
