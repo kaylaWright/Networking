@@ -21,10 +21,6 @@
 //defines
 #define HANDSIZE 5
 
-//some useful definitions.
-//keeps track of what step of the game we're at. 
-enum GameStates { WAITING_PLAYERS, WAITING_CARDS, DECIDING_WINNER };
-
 //information about the player/s.
 struct Player
 {
@@ -46,11 +42,23 @@ struct Player
 	bool isAsker;
 };
 
+struct Answer
+{
+	Answer(SystemAddress _add, std::string _card)
+	{
+		pAddress = _add;
+		pCard = _card;
+	}
+
+	SystemAddress pAddress;
+	std::string pCard;
+};
+
 //host-specific vars.
 
 //typedefs.
 typedef std::vector<std::string>::iterator stringIT;
-typedef std::vector<Player>::iterator playerIT;
+typedef std::vector<Answer>::iterator answerIT;
 
 class CardsAgainstHumanity
 {
@@ -67,6 +75,8 @@ private:
 	std::string currentQuestionCard;
 	std::vector<std::string> questionCards;
 	std::vector<std::string> answerCards;
+
+	std::vector<Answer> submittedAnswers;
 
 	//xml handling of the cards. 
 	bool LoadCards();
@@ -95,8 +105,6 @@ public:
 
 	//players. 
 	Player player;
-	//game state
-	GameStates currentState; 
 
 	//sets up the game (loads and shuffles cards, etc.
 	void SetupGame();
@@ -107,8 +115,19 @@ public:
 	//still the hosts resposibility -> must draw the card and replace the one they used with it. 
 	std::string DrawQuestionCard();
 	//allows player to choose card, submits contents of the card to the host for collection. 
-	std::string ChooseCard();
+	void ChooseCard();
+	int ChooseWinner(int _numCards);
 
+	//collects a card for submission, used by raknet to populate submittedanswers vec. 
+	void SubmitAnswer(Answer _answ);
+	//shows all of the submitted answers to all players alongside the question, so all players can have a giggle
+	//while they wait for the asker to decide on a winner.
+	int DisplaySubmittedAnswers();
+
+	//displays the scores thusfar, by name.
+	void DisplayScores();
+
+	///adds a score to the current game. 
 	void AddScore();
 
 	//getters/setters, if needed.
@@ -116,6 +135,12 @@ public:
 	void SetQuit(bool _new);
 
 	void SetQuestionCard(std::string _card);
+
+	//returns the address corresponding to a selected position. 
+	std::string GetSubmittedAnswerByIndex(int _i);
+	SystemAddress GetAnswerAddress(int _num);
+
+	std::string CardsAgainstHumanity::GetScore();
 };
 
 #endif

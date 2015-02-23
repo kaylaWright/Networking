@@ -11,14 +11,13 @@ CardsAgainstHumanity::CardsAgainstHumanity() : isQuit(false)
 
 	//initialize the player to default values. 
 	player = Player();
-	currentState = WAITING_PLAYERS;
-	LoadCards();
 }
 
 CardsAgainstHumanity::~CardsAgainstHumanity()
 {
 	questionCards.clear();
 	answerCards.clear();
+	submittedAnswers.clear();
 
 	delete netHelper; 
 	netHelper = NULL;
@@ -75,7 +74,6 @@ void CardsAgainstHumanity::SetupGame()
 	//deal out cards as needed to start game. 
 	DealAnswerCards(5);
 
-	currentState = GameStates::WAITING_CARDS;
 	netHelper->BroadcastMessageToPeers(GameMessages::ID_CHOOSE_CARD, "");
 
 	ChooseCard();
@@ -113,6 +111,7 @@ void CardsAgainstHumanity::GetHost()
 		std::cout << "You'll host then." << std::endl;
 
 		netHelper->Init(true);
+		player.isAsker = true;
 
 		//only the host needs to hold onto the 'original' ordering of the cards, and will be responsible for
 		//dealing out new cards as needed. All other players will receive string literals for their hands. 
@@ -235,8 +234,6 @@ void CardsAgainstHumanity::DealAnswerCards(int _numCards)
 		answerCards.pop_back();
 	}
 
-	std::cout << netHelper->GetNumConnections() << std::endl;
-
 	//deal out cards to remaining players. 
 	// i = 1 because 0 is the host. 
 	for (int i = 0; i < netHelper->GetNumConnections(); i++)
@@ -265,7 +262,7 @@ std::string CardsAgainstHumanity::DrawQuestionCard()
 
 //allows the player to choose which card they would like to play this round
 //triggers a ready event. 
-std::string CardsAgainstHumanity::ChooseCard()
+void CardsAgainstHumanity::ChooseCard()
 {
 	system("cls");
 
@@ -293,7 +290,21 @@ std::string CardsAgainstHumanity::ChooseCard()
 		temp = command[0] - 49;
 		std::cout << std::endl << "Okay, you've chosen..." << std::endl << player.hand[temp] << std::endl;
 		std::cout << "Now we're just waiting on the others..." << std::endl; 
+		netHelper->BroadcastMessageToPeers(ID_COLLECT_ANSWER_CARDS, player.hand[temp]);
 		netHelper->SetEvent(NetworkHelper::RE_WAITINGFORACTIONS, true);
+
+		//if you're the host, send a message to yourself as well. 
+		if (netHelper->GetIsHost())
+		{
+			netHelper->SendMessageToPeer(ID_COLLECT_ANSWER_CARDS, netHelper->GetLocalAddress(), player.hand[temp]);
+		}
+
+		//remove that card from the players hands, they don't get it back no matter what. 
+		stringIT it = player.hand.begin() + temp;
+		std::rotate(it, it + 1, player.hand.end());
+		player.hand.pop_back();
+
+		//end case. 
 		break;
 	}
 	default:
@@ -301,8 +312,28 @@ std::string CardsAgainstHumanity::ChooseCard()
 		ChooseCard();
 		break;
 	}
+}
 
-	return player.hand[temp];
+//allows the asker to choose the winning card. 
+int CardsAgainstHumanity::ChooseWinner(int _numCards)
+{
+	std::cout << "All right, czar, what card do you like best?" << std::endl << std::endl;
+
+	std::cin.clear();
+	std::cin >> command;
+	int card = command[0] - 49;
+
+	if (card <= _numCards)
+	{
+		std::cout << "Okay, cool." << std::endl;
+		netHelper->SetEvent(NetworkHelper::RE_WAITING_FOR_DECISION, true);
+		return card;
+	}
+	else
+	{
+		std::cout << "Not an option, tho." << std::endl;
+		ChooseWinner(_numCards);
+	}
 }
 
 //displays all the cards, numbered according to the first one shown. 
@@ -314,9 +345,52 @@ void CardsAgainstHumanity::DisplayCards()
 	}
 }
 
+void CardsAgainstHumanity::SubmitAnswer(Answer _answ)
+{
+	submittedAnswers.push_back(_answ);
+}
+
+int CardsAgainstHumanity::DisplaySubmittedAnswers()
+{
+	if (submittedAnswers.empty())
+	{
+		std::cout << "Something's wrong in display submitted answers." << std::endl;
+		return 0;
+	}
+
+	//redisplay the question to everyone. 
+	std::cout << currentQuestionCard << std::endl << std::endl;
+	netHelper->BroadcastMessageToPeers(ID_BROADCAST_MESSAGE, (currentQuestionCard + "\n"));
+
+	//display the selected answers to everyone, alongside a number so the asker knows what to put in. 
+	int i = 1;
+	for (answerIT it = submittedAnswers.begin(); it != submittedAnswers.end(); ++it, ++i)
+	{
+		std::string temp = std::to_string(i) + ": " + it->pCard;
+		std::cout << temp << std::endl;
+		netHelper->BroadcastMessageToPeers(ID_BROADCAST_MESSAGE, temp);
+	}
+
+	//extra space though. 
+	netHelper->BroadcastMessageToPeers(ID_BROADCAST_MESSAGE, "\n");
+
+	return submittedAnswers.size();
+}
+
 #pragma endregion 
 
 #pragma region scoring.
+
+//displays the scores.
+void CardsAgainstHumanity::DisplayScores()
+{
+	netHelper->SendMessageToPeer(ID_SHOW_SCORE, netHelper->GetLocalAddress(), "");
+
+	for (int i = 0; i < netHelper->GetNumConnections(); i++)
+	{
+		netHelper->SendMessageToPeer(ID_SHOW_SCORE, netHelper->GetPlayerAddress(0), "");
+	}
+}
 
 //adds a score to the players count. 
 void CardsAgainstHumanity::AddScore()
@@ -342,6 +416,23 @@ void CardsAgainstHumanity::SetQuit(bool _new)
 void CardsAgainstHumanity::SetQuestionCard(std::string _card)
 {
 	currentQuestionCard = _card;
+}
+
+SystemAddress CardsAgainstHumanity::GetAnswerAddress(int _num)
+{
+	return submittedAnswers[_num].pAddress;
+}
+
+std::string CardsAgainstHumanity::GetSubmittedAnswerByIndex(int _i)
+{
+	return submittedAnswers[_i].pCard;
+}
+
+std::string CardsAgainstHumanity::GetScore()
+{
+	std::string temp;
+	temp = player.pName + ": " + std::to_string(player.pScore);
+	return temp;
 }
 
 #pragma endregion 

@@ -24,7 +24,10 @@ enum GameMessages
 	ID_START_ROUND = ID_USER_PACKET_ENUM + 4,
 	ID_RECEIVE_CARD = ID_USER_PACKET_ENUM + 5,
 	ID_RECEIVE_QUESTION_CARD = ID_USER_PACKET_ENUM + 6,
-	ID_BROADCAST_MESSAGE = ID_USER_PACKET_ENUM + 7
+	ID_COLLECT_ANSWER_CARDS = ID_USER_PACKET_ENUM + 7,
+	ID_ADD_SCORE = ID_USER_PACKET_ENUM + 8,
+	ID_SHOW_SCORE = ID_USER_PACKET_ENUM + 9,
+	ID_BROADCAST_MESSAGE = ID_USER_PACKET_ENUM + 10
 };
 
 class NetworkHelper
@@ -52,7 +55,7 @@ private:
 protected:
 	//
 public:
-	enum READYEVENTIDs { RE_WAITINGFORPLAYERS = 0, RE_WAITINGFORACTIONS, RE_FINISH };
+	enum READYEVENTIDs { RE_WAITINGFORPLAYERS = 0, RE_WAITINGFORACTIONS, RE_WAITING_FOR_DECISION, RE_FINISH };
 
 	NetworkHelper(CardsAgainstHumanity* _game);
 	~NetworkHelper() {}
@@ -74,6 +77,8 @@ public:
 
 	//get/sets
 	int GetNumConnections();
+
+	SystemAddress GetLocalAddress();
 
 	bool GetIsHost()
 	{	return m_IsHost; }

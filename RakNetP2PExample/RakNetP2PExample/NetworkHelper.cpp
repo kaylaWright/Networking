@@ -97,6 +97,8 @@ void NetworkHelper::SetEvent(READYEVENTIDs eventId, bool isReady)
 //didn't touch this, handles all-ready events. 
 void NetworkHelper::HandleEventAllSet(int eventId)
 {
+	int card = 0;
+
 	switch (eventId)
 	{
 	case RE_WAITINGFORPLAYERS:
@@ -123,6 +125,42 @@ void NetworkHelper::HandleEventAllSet(int eventId)
 		break;
 	case RE_WAITINGFORACTIONS:
 		std::cout << "everyone's ready to see the cards!" << std::endl;
+
+		system("cls");
+
+		int num;
+
+		if (m_IsHost)
+		{
+			num = currentGame->DisplaySubmittedAnswers();
+		}
+	
+		if (currentGame->player.isAsker)
+		{
+			//choose the favourite card.
+			card = currentGame->ChooseWinner(num) - 1;
+		}
+		else
+		{
+			//sort of chill out and wait. 
+			std::cout << std::endl << "We're just waiting on the czar to choose. Isn't it taking forever?" << std::endl;
+			SetEvent(RE_WAITING_FOR_DECISION, true);
+		}
+		break;
+	case RE_WAITING_FOR_DECISION:
+		{
+			std::cout << "A card has been chosen (Finally, right? ;)" << std::endl << "The winner is..." << std::endl;
+			
+			if (m_IsHost)
+			{
+				std::cout << currentGame->GetSubmittedAnswerByIndex(card) << std::endl;
+				BroadcastMessageToPeers(ID_BROADCAST_MESSAGE, currentGame->GetSubmittedAnswerByIndex(card));
+
+				SendMessageToPeer(ID_ADD_SCORE, currentGame->GetAnswerAddress(card), "");
+
+				currentGame->DisplayScores();
+			}
+		}
 		break;
 	case RE_FINISH:
 		break;
@@ -162,6 +200,11 @@ void NetworkHelper::BroadcastMessageToPeers(GameMessages _type, std::string _mes
 	m_RakPeer->Send(&bsOUT, HIGH_PRIORITY, RELIABLE_ORDERED, 0, UNASSIGNED_SYSTEM_ADDRESS, true);
 }
 
+SystemAddress NetworkHelper::GetLocalAddress()
+{
+	return m_RakPeer->GetMyBoundAddress();
+}
+
 //checks for packets from peers. 
 void NetworkHelper::Update()
 {
@@ -191,7 +234,7 @@ void NetworkHelper::Update()
 				currentGame->DealAnswerCards(1);
 			}
 			break;
-		//allows players to choose a card. 
+		//allows players to choose a card, sends that card to all peers for collection by host.  
 		case ID_CHOOSE_CARD:
 			currentGame->ChooseCard();
 			break;
@@ -221,6 +264,31 @@ void NetworkHelper::Update()
 			bsIN.Read(rs);
 			currentGame->SetQuestionCard(static_cast<std::string>(rs));
 			break;
+		case ID_COLLECT_ANSWER_CARDS:
+			if (m_IsHost)
+			{
+				//get the address of the player who submitted a given card.
+				SystemAddress tempAdd = m_RakPeer->GetSystemAddressFromGuid(p->guid);
+				
+				//get the card they submitted and make an answer struct out of it.
+				bsIN.IgnoreBytes(sizeof(RakNet::MessageID));
+				bsIN.Read(rs);
+				Answer temp = Answer(tempAdd, static_cast<std::string>(rs));
+
+				//push that answer struct to the hosts collection of answered cards. 
+				currentGame->SubmitAnswer(temp);
+			}
+			break;
+		case ID_ADD_SCORE:
+			currentGame->AddScore();
+			break;
+		case ID_SHOW_SCORE:
+			{
+				std::string scoreString = "Your score: " + std::to_string(currentGame->player.pScore);
+				std::cout << scoreString << std::endl;
+				BroadcastMessageToPeers(ID_BROADCAST_MESSAGE, scoreString);
+			}
+			break;
 		//broadcasts message to all players. 
 		case ID_BROADCAST_MESSAGE:
 			bsIN.IgnoreBytes(sizeof(RakNet::MessageID));
@@ -233,6 +301,7 @@ void NetworkHelper::Update()
 			//necessary, or adding in a player twice? 
 			m_ReadyEventPlugin.AddToWaitList(RE_WAITINGFORPLAYERS, p->guid);
 			m_ReadyEventPlugin.AddToWaitList(RE_WAITINGFORACTIONS, p->guid);
+			m_ReadyEventPlugin.AddToWaitList(RE_WAITING_FOR_DECISION, p->guid);
 			m_ReadyEventPlugin.AddToWaitList(RE_FINISH, p->guid);
 
 			break;
@@ -241,6 +310,7 @@ void NetworkHelper::Update()
 			//adding peers that you are connected to, to your event list
 			m_ReadyEventPlugin.AddToWaitList(RE_WAITINGFORPLAYERS, p->guid);
 			m_ReadyEventPlugin.AddToWaitList(RE_WAITINGFORACTIONS, p->guid);
+			m_ReadyEventPlugin.AddToWaitList(RE_WAITING_FOR_DECISION, p->guid);
 			m_ReadyEventPlugin.AddToWaitList(RE_FINISH, p->guid);
 			
 			bsIN.IgnoreBytes(sizeof(RakNet::MessageID));
