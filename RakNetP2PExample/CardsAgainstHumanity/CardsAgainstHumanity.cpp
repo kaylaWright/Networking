@@ -194,6 +194,7 @@ bool CardsAgainstHumanity::LoadCards()
 {
 	//get the xml document, make sure it loads correctly. 
 	pugi::xml_document cardDOC;
+
 	if (!cardDOC.load_file("cards.xml"))
 	{
 		std::cout << "Couldn't load cards.xml" << std::endl;
@@ -345,11 +346,13 @@ void CardsAgainstHumanity::DisplayCards()
 	}
 }
 
+//pushes an answer back into the vector of submitted answers 
 void CardsAgainstHumanity::SubmitAnswer(Answer _answ)
 {
 	submittedAnswers.push_back(_answ);
 }
 
+//Displays all the submitted answers to all players, as well as the host. HOST ONLY.
 int CardsAgainstHumanity::DisplaySubmittedAnswers()
 {
 	if (submittedAnswers.empty())

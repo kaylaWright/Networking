@@ -2,10 +2,10 @@
 <cards>
 	<questions> 
 		<q>___ was the most traumatic thing to happen to Franz Ferdinand.</q>
-		<q>Who's your daddy? </q>
+		<q>Who's your daddy?</q>
 		<q>Highly anticipated release from Warner Bros: ___</q>
 		<q>___, the greatest rapper of all time.</q>
-		<q>Firas Hosn dramatically increased class attendance with the introduction of _____.</q>
+		<q>Firas Hosn dramatically increased class attendance with the introduction of ____.</q>
 		<q>Stephen Harper's latest plan to improve the economy of Canada includes ____.</q>
 		<q>The best part of waking up, is ____ in your cup.</q>
 		<q>Mohammed Ali knew he met his match when ____ stepped into the ring.</q>		
@@ -14,8 +14,10 @@
 		<q>England's new pornography rules also bans the use of ____.</q>
 		<q>I knew the night was going sour when my date broached the topic of ____.</q>		
 		<q>On Tuesday, the pope declared ____ a deadly sin.</q>
-		<q>___. ___ never changes.</q>		
-	</questions>
+		<q>___. ___ never changes.</q>
+    <q>I quit Dark Souls when it came to the ___ boss.</q>
+    <q>Why wasn't Sean in class today?</q>
+  </questions>
 	<answers>
 		<a>Rick James</a>
 		<a>Mutilation</a>
@@ -69,5 +71,26 @@
 		<a>Meth Mouth</a>
 		<a>My Annual Income</a>	
 		<a>Dr. Dre</a>
+    <a>Being a mother fucking sorceror</a>
+    <a>Pseudoinspirational Platitudes</a>
+    <a>Y'ha N'thlei</a>
+    <a>The One Ring</a>
+    <a>Bubsy 3D</a>
+    <a>The 3/5s Compromise</a>
+    <a>The Vapours</a>
+    <a>Flying Octopi</a>
+    <a>Pervasive Unease with the Word 'Moist'</a>
+    <a>Mortal Coils</a>
+    <a>Tiny Heads instead of Hands</a>
+    <a>Sunlight</a>
+    <a>ISIL</a>
+    <a>Interrogation Techniques</a>
+    <a>Nick Cage</a>
+    <a>A Rude Dude</a>
+    <a>Puerile Scat Jokes</a>
+    <a>Dlsyexia</a>
+    <a>ANARCHY</a>
+    <a>PG-13 Movies</a>
+    <a>Giving a Bitch a Foot Massage</a>
 	</answers>
 </cards>
