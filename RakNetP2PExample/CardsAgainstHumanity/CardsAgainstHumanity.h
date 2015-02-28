@@ -108,6 +108,7 @@ public:
 
 	//sets up the game (loads and shuffles cards, etc.
 	void SetupGame();
+	void ResetGame();
 
 	//deals out cards to each player based off of random indices in the answer vector. 
 	void DealAnswerCards(int _numCards);
@@ -117,6 +118,7 @@ public:
 	//allows player to choose card, submits contents of the card to the host for collection. 
 	void ChooseCard();
 	int ChooseWinner(int _numCards);
+	void StartNewRound();
 
 	//collects a card for submission, used by raknet to populate submittedanswers vec. 
 	void SubmitAnswer(Answer _answ);

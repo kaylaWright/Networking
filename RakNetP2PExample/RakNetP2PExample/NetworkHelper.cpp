@@ -106,9 +106,6 @@ void NetworkHelper::HandleEventAllSet(int eventId)
 		{
 			//tells other player this player is ready.
 			std::string temp = "We still need more players!\nWe only have " + std::to_string((GetNumConnections() + 1)) + "/4.";
-			temp = currentGame->player.pName + " is also ready.";
-			BroadcastMessageToPeers(ID_BROADCAST_MESSAGE, temp);
-
 			//displays to self this player is ready. 
 			std::cout << "You are ready, " << currentGame->player.pName << "." << std::endl << std::endl;
 		}
@@ -122,29 +119,28 @@ void NetworkHelper::HandleEventAllSet(int eventId)
 			}
 		}
 		break;
-		break;
 	case RE_WAITINGFORACTIONS:
-		std::cout << "everyone's ready to see the cards!" << std::endl;
-
 		system("cls");
+		{
+			int num = NULL;
 
-		int num;
+			if (m_IsHost)
+			{
+				std::cout << "Displaying cards:";
+				num = currentGame->DisplaySubmittedAnswers();
+				BroadcastMessageToPeers(ID_CHOOSE_WINNER, std::to_string(num));
+				if (currentGame->player.isAsker)
+				{
+					currentGame->ChooseWinner(num);
+				}
+			}
 
-		if (m_IsHost)
-		{
-			num = currentGame->DisplaySubmittedAnswers();
-		}
-	
-		if (currentGame->player.isAsker)
-		{
-			//choose the favourite card.
-			card = currentGame->ChooseWinner(num) - 1;
-		}
-		else
-		{
 			//sort of chill out and wait. 
-			std::cout << std::endl << "We're just waiting on the czar to choose. Isn't it taking forever?" << std::endl;
-			SetEvent(RE_WAITING_FOR_DECISION, true);
+			if (currentGame->player.isAsker == false)
+			{
+				std::cout << std::endl << "We're just waiting on the czar to choose. Isn't it taking forever?" << std::endl;
+				SetEvent(RE_WAITING_FOR_DECISION, true);
+			}
 		}
 		break;
 	case RE_WAITING_FOR_DECISION:
@@ -217,33 +213,28 @@ void NetworkHelper::Update()
 
 		switch (p->data[0])
 		{
-		//CAH specific.
-		//deals a whole hand to players -> in case one would like to restart a second round. 
-		case ID_DEAL_HAND:
-			if (m_IsHost)
-			{
-				//if you're the host, deal out cards to all of the players. 
-				currentGame->DealAnswerCards(5);
-			}
-			break;
-		//deals a single card to all players.
-		case ID_DEAL_CARD:
-			if (m_IsHost)
-			{
-				//if the host, you may draw a card to send to a player. 
-				currentGame->DealAnswerCards(1);
-			}
-			break;
 		//allows players to choose a card, sends that card to all peers for collection by host.  
 		case ID_CHOOSE_CARD:
 			currentGame->ChooseCard();
 			break;
+		case ID_CHOOSE_WINNER:
+			if (currentGame->player.isAsker)
+			{
+				//ignore the message sent in. 
+				bsIN.IgnoreBytes(sizeof(RakNet::MessageID));
+
+				currentGame->ChooseWinner(RakString::ToInteger(rs));
+			}
+			break;
 		case ID_START_ROUND:
+			currentGame->player.isAsker = false;
+			SetEvent(RE_WAITINGFORACTIONS, false);
+			SetEvent(RE_WAITING_FOR_DECISION, false);
+
 			if (m_IsHost)
 			{
-				//deal out cards.
-				currentGame->DealAnswerCards(5);
-				//choose a czar, save that index. 
+				std::cout << "Start round reached." << std::endl;
+				currentGame->StartNewRound();
 			}
 			break;
 		case ID_RECEIVE_CARD:
@@ -287,7 +278,27 @@ void NetworkHelper::Update()
 				std::string scoreString = "Your score: " + std::to_string(currentGame->player.pScore);
 				std::cout << scoreString << std::endl;
 				BroadcastMessageToPeers(ID_BROADCAST_MESSAGE, scoreString);
+
+				BroadcastMessageToPeers(ID_START_ROUND, "");
 			}
+			break;
+		case ID_BECOME_ASKER:
+			currentGame->player.isAsker = true;
+			break;
+		case ID_WIN_GAME:
+			bsIN.IgnoreBytes(sizeof(RakNet::MessageID));
+			bsIN.Read(rs);
+
+			rs += " has won!";
+			std::cout << rs.C_String() << std::endl;
+			
+			currentGame->ResetGame();
+
+			if (m_IsHost)
+			{
+				currentGame->SetupGame();
+			}
+
 			break;
 		//broadcasts message to all players. 
 		case ID_BROADCAST_MESSAGE:
